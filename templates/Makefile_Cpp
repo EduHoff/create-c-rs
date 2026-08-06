@@ -1,0 +1,52 @@
+rwildcard = $(foreach d,$(wildcard $(1:=/*)),$(call rwildcard,$d,$2) $(filter $(subst *,%,$2),$d))
+
+ifeq ($(OS),Windows_NT)
+    TARGET_EXT = .exe
+    RM = del /Q /S
+    FIXPATH = $(subst /,\,$1)
+    MKDIR = if not exist "$(subst /,\,$1)" mkdir "$(subst /,\,$1)"
+else
+    TARGET_EXT =
+    RM = rm -rf
+    FIXPATH = $1
+    MKDIR = mkdir -p $1
+endif
+
+CC       := g++
+CFLAGS   := -Wall -Wextra -std=c++17 -O2 -MMD -MP
+INC_DIR  := include
+
+INC_DIRS := $(INC_DIR) $(dir $(call rwildcard,$(INC_DIR),*/))
+INCLUDES := $(addprefix -I,$(INC_DIRS))
+
+PROJECT_NAME := project_name
+TARGET   := build/$(PROJECT_NAME)$(TARGET_EXT)
+SRC_DIR  := src
+OBJ_DIR  := build/obj
+
+SRCS := $(call rwildcard,$(SRC_DIR),*.cpp)
+OBJS := $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SRCS))
+DEPS := $(OBJS:.o=.d)
+
+all: $(TARGET)
+
+run: $(TARGET)
+	@./$(TARGET)
+
+$(TARGET): $(OBJS)
+	@$(call MKDIR,$(dir $@))
+	$(CC) $(CFLAGS) $^ -o $@
+	@echo "Compilation completed successfully: $@"
+
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
+	@$(call MKDIR,$(dir $@))
+	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+
+-include $(DEPS)
+
+clean:
+	$(RM) $(call FIXPATH,$(OBJ_DIR))
+	$(RM) $(call FIXPATH,$(TARGET))
+	@echo "Cleaning complete."
+
+.PHONY: all run clean
