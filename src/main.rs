@@ -1,4 +1,7 @@
+use std::path::Path;
+
 use clearscreen::clear;
+use create_c_rs::builder::filesystem;
 use dialoguer::{Input, Select, theme::ColorfulTheme};
 use regex::Regex;
 
@@ -30,6 +33,13 @@ fn main() {
     let selected_language = languages
         .get(language_index)
         .expect("Selected index should always be within bounds of languages array");
+
+    let project_path = Path::new(&project_name);
+
+    if let Err(err) = filesystem::create_project_structure(project_path) {
+        eprintln!("Error creating the folder structure: {err}");
+        std::process::exit(1);
+    }
 
     clear().expect("Fail to clear screen");
     println!("Project name: {project_name}");
