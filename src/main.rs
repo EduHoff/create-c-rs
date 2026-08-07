@@ -1,7 +1,10 @@
 use std::path::Path;
 
 use clearscreen::clear;
-use create_c_rs::builder::{filesystem::create_project_structure, generator::generate_makefile};
+use create_c_rs::builder::{
+    filesystem::create_project_structure,
+    generator::{generate_main_file, generate_makefile},
+};
 use dialoguer::{Input, Select, theme::ColorfulTheme};
 use regex::Regex;
 
@@ -43,6 +46,11 @@ fn main() {
 
     if let Err(err) = generate_makefile(project_path, &project_name, selected_language) {
         eprintln!("Error generating Makefile: {err}");
+        std::process::exit(1);
+    }
+
+    if let Err(err) = generate_main_file(project_path, selected_language) {
+        eprintln!("Error generating main file: {err}");
         std::process::exit(1);
     }
 
