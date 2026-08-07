@@ -1,7 +1,7 @@
 use std::path::Path;
 
 use clearscreen::clear;
-use create_c_rs::builder::filesystem;
+use create_c_rs::builder::{filesystem::create_project_structure, generator::generate_makefile};
 use dialoguer::{Input, Select, theme::ColorfulTheme};
 use regex::Regex;
 
@@ -36,8 +36,13 @@ fn main() {
 
     let project_path = Path::new(&project_name);
 
-    if let Err(err) = filesystem::create_project_structure(project_path) {
+    if let Err(err) = create_project_structure(project_path) {
         eprintln!("Error creating the folder structure: {err}");
+        std::process::exit(1);
+    }
+
+    if let Err(err) = generate_makefile(project_path, &project_name, selected_language) {
+        eprintln!("Error generating Makefile: {err}");
         std::process::exit(1);
     }
 
