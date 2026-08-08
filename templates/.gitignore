@@ -1,0 +1,22 @@
+# Build output
+build/
+*.o
+*.d
+*.a
+*.so
+*.dylib
+*.dll
+*.exe
+*.out
+
+# Editors and IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.history/
+
+# OS metadata
+.DS_Store
+Thumbs.db

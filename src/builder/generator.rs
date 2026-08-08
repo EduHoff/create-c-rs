@@ -7,6 +7,8 @@ const MAIN_C: &str = include_str!("../../templates/main.c");
 const MAIN_CPP: &str = include_str!("../../templates/main.cpp");
 
 const README: &str = include_str!("../../templates/README.md");
+const LICENSE: &str = include_str!("../../templates/LICENSE");
+const GITIGNORE: &str = include_str!("../../templates/.gitignore");
 
 pub fn generate_makefile(
     project_path: &Path,
@@ -47,6 +49,22 @@ pub fn generate_readme_file(project_path: &Path, project_name: &str) -> io::Resu
     let readme_file_path = project_path.join("README.md");
 
     fs::write(readme_file_path, content)?;
+
+    Ok(())
+}
+
+pub fn generate_license_file(project_path: &Path) -> io::Result<()> {
+    let license_file_path = project_path.join("LICENSE");
+
+    fs::write(license_file_path, LICENSE)?;
+
+    Ok(())
+}
+
+pub fn generate_gitignore_file(project_path: &Path) -> io::Result<()> {
+    let gitignore_file_path = project_path.join(".gitignore");
+
+    fs::write(gitignore_file_path, GITIGNORE)?;
 
     Ok(())
 }

@@ -3,7 +3,10 @@ use std::path::Path;
 use clearscreen::clear;
 use create_c_rs::builder::{
     filesystem::create_project_structure,
-    generator::{generate_main_file, generate_makefile, generate_readme_file},
+    generator::{
+        generate_gitignore_file, generate_license_file, generate_main_file, generate_makefile,
+        generate_readme_file,
+    },
 };
 use dialoguer::{Input, Select, theme::ColorfulTheme};
 use regex::Regex;
@@ -59,7 +62,23 @@ fn main() {
         std::process::exit(1);
     }
 
+    if let Err(err) = generate_license_file(project_path) {
+        eprintln!("Error generating LICENSE file: {err}");
+        std::process::exit(1);
+    }
+
+    if let Err(err) = generate_gitignore_file(project_path) {
+        eprintln!("Error generating .gitignore file: {err}");
+        std::process::exit(1);
+    }
+
     clear().expect("Fail to clear screen");
     println!("Project name: {project_name}");
     println!("Language: {selected_language}");
+
+    #[cfg(windows)]
+    let _ = std::process::Command::new("cmd")
+        .arg("/c")
+        .arg("pause")
+        .status();
 }
