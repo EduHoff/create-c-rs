@@ -4,8 +4,8 @@ use clearscreen::clear;
 use create_c_rs::builder::{
     filesystem::create_project_structure,
     generator::{
-        generate_gitignore_file, generate_license_file, generate_main_file, generate_makefile,
-        generate_readme_file,
+        generate_docker_files, generate_gitignore_file, generate_license_file, generate_main_file,
+        generate_makefile, generate_readme_file,
     },
 };
 use dialoguer::{Input, Select, theme::ColorfulTheme};
@@ -69,6 +69,11 @@ fn main() {
 
     if let Err(err) = generate_gitignore_file(project_path) {
         eprintln!("Error generating .gitignore file: {err}");
+        std::process::exit(1);
+    }
+
+    if let Err(err) = generate_docker_files(project_path, &project_name) {
+        eprintln!("Error generating Docker files: {err}");
         std::process::exit(1);
     }
 

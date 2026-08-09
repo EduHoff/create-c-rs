@@ -10,6 +10,10 @@ const README: &str = include_str!("../../templates/README.md");
 const LICENSE: &str = include_str!("../../templates/LICENSE");
 const GITIGNORE: &str = include_str!("../../templates/.gitignore");
 
+const DOCKERFILE: &str = include_str!("../../templates/Dockerfile");
+const DOCKER_COMPOSE: &str = include_str!("../../templates/docker-compose.yml");
+const DOCKERIGNORE: &str = include_str!("../../templates/.dockerignore");
+
 pub fn generate_makefile(
     project_path: &Path,
     project_name: &str,
@@ -65,6 +69,17 @@ pub fn generate_gitignore_file(project_path: &Path) -> io::Result<()> {
     let gitignore_file_path = project_path.join(".gitignore");
 
     fs::write(gitignore_file_path, GITIGNORE)?;
+
+    Ok(())
+}
+
+pub fn generate_docker_files(project_path: &Path, project_name: &str) -> io::Result<()> {
+    fs::write(project_path.join(".dockerignore"), DOCKERIGNORE)?;
+
+    fs::write(project_path.join("Dockerfile"), DOCKERFILE)?;
+
+    let compose_content = DOCKER_COMPOSE.replace("project_name", project_name);
+    fs::write(project_path.join("docker-compose.yml"), compose_content)?;
 
     Ok(())
 }
