@@ -1,5 +1,38 @@
-build/
+# Version control
 .git/
 .gitignore
-README.md
+
+# Build outputs & artifacts
+build/
+bin/
+obj/
+*.o
+*.obj
+*.d
+*.a
+*.lib
+*.so
+*.dylib
+*.dll
+*.exe
+*.out
+
+# LSP & Indexing
+compile_commands.json
+.cache/
+.clangd/
+
+# IDEs & Editor configurations
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.history/
+
+# Documentation & non-essential files
+*.md
 LICENSE
+Dockerfile
+.dockerignore
+docker-compose.yml

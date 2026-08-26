@@ -28,9 +28,9 @@ SRCS := $(call rwildcard,$(SRC_DIR),*.c)
 OBJS := $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRCS))
 DEPS := $(OBJS:.o=.d)
 
-all: $(TARGET)
+all: compiledb $(TARGET)
 
-run: $(TARGET)
+run: compiledb $(TARGET)
 	@./$(TARGET)
 
 $(TARGET): $(OBJS)
@@ -42,11 +42,26 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	@$(call MKDIR,$(dir $@))
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
+compiledb:
+	@echo "[" > compile_commands.json
+	@first=1; \
+	for src in $(SRCS); do \
+		if [ $$first -eq 1 ]; then first=0; else echo "," >> compile_commands.json; fi; \
+		echo "  {" >> compile_commands.json; \
+		echo "    \"directory\": \"$(CURDIR)\"," >> compile_commands.json; \
+		echo "    \"command\": \"$(CC) $(CFLAGS) $(INCLUDES) -c $$src\"," >> compile_commands.json; \
+		echo "    \"file\": \"$$src\"" >> compile_commands.json; \
+		echo "  }" >> compile_commands.json; \
+	done
+	@echo "]" >> compile_commands.json
+	@echo "Updated compile_commands.json"
+
 -include $(DEPS)
 
 clean:
 	$(RM) $(call FIXPATH,$(OBJ_DIR))
 	$(RM) $(call FIXPATH,$(TARGET))
+	$(RM) compile_commands.json
 	@echo "Cleaning complete."
 
-.PHONY: all run clean
+.PHONY: all run clean compiledb

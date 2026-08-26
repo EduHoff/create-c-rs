@@ -1,13 +1,22 @@
-# Build output
+# Build output & binaries
 build/
+bin/
+obj/
 *.o
+*.obj
 *.d
 *.a
+*.lib
 *.so
 *.dylib
 *.dll
 *.exe
 *.out
+
+# LSP & Compiler Indexing Databases
+compile_commands.json
+.cache/
+.clangd/
 
 # Editors and IDEs
 .vscode/
@@ -16,7 +25,13 @@ build/
 *.swo
 *~
 .history/
+*.user
 
 # OS metadata
 .DS_Store
 Thumbs.db
+ehthumbs.db
+
+# Logs & Temporary files
+*.log
+*.tmp
